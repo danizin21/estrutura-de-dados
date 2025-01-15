@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Estrutura da lista encadeada
+typedef struct lista {
+    int dado;
+    struct lista *prox;
+} Lista;
+
+// Função para criar um novo nó
+Lista *novoNo() {
+    Lista *novo = (Lista *)malloc(sizeof(Lista));
+    if (novo == NULL) {
+        printf("Erro na alocação de memória.\n");
+        exit(1);
+    }
+    novo->dado = 0; // Inicializa o dado com 0
+    novo->prox = NULL;
+    return novo;
+}
+
+// Função para inserir um valor na lista na posição especificada
+void inserir(Lista **head, int pos, int valor) {
+    Lista *novo = novoNo();
+    novo->dado = valor;
+
+    if (pos == 0) { // Inserção no início
+        novo->prox = *head;
+        *head = novo;
+        return;
+    }
+
+    Lista *atual = *head;
+    for (int i = 0; i < pos - 1 && atual != NULL; i++) {
+        atual = atual->prox;
+    }
+
+    if (atual == NULL) {
+        printf("Posição inválida.\n");
+        free(novo);
+        return;
+    }
+
+    novo->prox = atual->prox;
+    atual->prox = novo;
+}
+
+// Função para remover um elemento pelo valor
+void remover(Lista **head, int valor) {
+    Lista *atual = *head, *anterior = NULL;
+
+    while (atual != NULL && atual->dado != valor) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    if (atual == NULL) {
+        printf("Valor %d não encontrado na lista.\n", valor);
+        return;
+    }
+
+    if (anterior == NULL) { // Remoção do primeiro elemento
+        *head = atual->prox;
+    } else { // Remoção de outros elementos
+        anterior->prox = atual->prox;
+    }
+
+    free(atual);
+    printf("Valor %d removido com sucesso.\n", valor);
+}
+
+// Função para buscar um valor na lista
+void buscar(Lista *head, int valor) {
+    Lista *atual = head;
+    int pos = 0;
+
+    while (atual != NULL) {
+        if (atual->dado == valor) {
+            printf("Valor %d encontrado na posição %d.\n", valor, pos);
+            return;
+        }
+        atual = atual->prox;
+        pos++;
+    }
+
+    printf("Valor %d não encontrado na lista.\n", valor);
+}
+
+// Função para imprimir a lista
+void imprimir(Lista *head) {
+    Lista *atual = head;
+    printf("Lista: ");
+    while (atual != NULL) {
+        printf("%d -> ", atual->dado);
+        atual = atual->prox;
+    }
+    printf("NULL\n");
+}
+
+// Função principal
+int main() {
+    Lista *head = NULL; // Cabeça da lista
+
+    // Teste das funções
+    inserir(&head, 0, 10);
+    inserir(&head, 1, 20);
+    inserir(&head, 1, 15);
+    imprimir(head);
+
+    buscar(head, 15);
+    buscar(head, 25);
+
+    remover(&head, 15);
+    imprimir(head);
+
+    remover(&head, 10);
+    imprimir(head);
+
+    remover(&head, 30);
+    imprimir(head);
+
+    return 0;
+}
