@@ -1,0 +1,128 @@
+#include <stdio.h>
+#define TAM 100
+
+// Representa o item armazenado
+typedef struct ITEM {
+    int chave;
+    int valor;
+} ITEM;
+
+// Representa a lista de itens
+typedef struct LISTA {
+    ITEM itens[TAM];
+    int fim;
+} LISTA;
+
+// Função para inicializar a lista
+void criar(LISTA *lista) {
+    lista->fim = 0; // Define o índice inicial da lista como vazio
+}
+
+// Função para imprimir a lista
+void imprimir(LISTA *lista) {
+    for (int i = 0; i < lista->fim; i++) {
+        printf("Chave: %d, Valor: %d\n", lista->itens[i].chave, lista->itens[i].valor);
+    }
+}
+
+// Função para verificar se a lista está vazia
+int vazia(LISTA *lista) {
+    return lista->fim == 0;
+}
+
+// Função para verificar se a lista está cheia
+int cheia(LISTA *lista) {
+    return lista->fim == TAM;
+}
+
+// Função para inserir um item no final da lista
+int inserir_fim(LISTA *lista, ITEM *item) {
+    if (cheia(lista)) {
+        printf("A lista está cheia, não é possível adicionar itens.\n");
+        return -1;
+    }
+    lista->itens[lista->fim] = *item;
+    lista->fim++;
+    return 0;
+}
+
+// Função para inserir um item em uma posição específica
+int inserir_posicao(LISTA *lista, int pos, ITEM *item) {
+    if (cheia(lista)) {
+        printf("A lista está cheia, não é possível adicionar itens.\n");
+        return -1;
+    }
+    if (pos < 0 || pos > lista->fim) {
+        printf("Posição inválida.\n");
+        return -1;
+    }
+    for (int i = lista->fim; i > pos; i--) {
+        lista->itens[i] = lista->itens[i - 1];
+    }
+    lista->itens[pos] = *item;
+    lista->fim++;
+    return 0;
+}
+
+// Função para remover um item de uma posição específica
+int remover(LISTA *lista, int pos) {
+    if (vazia(lista)) {
+        printf("A lista está vazia, não é possível remover itens.\n");
+        return -1;
+    }
+    if (pos < 0 || pos >= lista->fim) {
+        printf("Posição inválida.\n");
+        return -1;
+    }
+    for (int i = pos; i < lista->fim - 1; i++) {
+        lista->itens[i] = lista->itens[i + 1];
+    }
+    lista->fim--;
+    return 0;
+}
+
+// Função para retornar o tamanho da lista
+int tamanho(LISTA *lista) {
+    return lista->fim;
+}
+
+// Função principal
+int main() {
+    LISTA lista;  // Declara a lista
+    criar(&lista);  // Inicializa a lista
+
+    // Adiciona itens na lista
+    ITEM item1 = {1, 10};
+    ITEM item2 = {2, 20};
+    ITEM item3 = {3, 30};
+    ITEM item4 = {4, 40};
+    ITEM item5 = {5, 50};
+    
+    inserir_fim(&lista, &item1);
+    inserir_fim(&lista, &item2);
+    inserir_fim(&lista, &item3);
+    inserir_fim(&lista, &item4);
+    inserir_fim(&lista, &item5);
+
+    // Imprime a lista
+    printf("Lista após inserções:\n");
+    imprimir(&lista);
+
+    // Insere um item na posição 2
+    ITEM item6 = {99, 999};
+    inserir_posicao(&lista, 2, &item6);
+    printf("\nLista após inserir na posição 2:\n");
+    imprimir(&lista);
+
+    // Remove o item na posição 3
+    remover(&lista, 3);
+    printf("\nLista após remover da posição 3:\n");
+    imprimir(&lista);
+
+    // Exibe informações da lista
+    printf("\nTamanho da lista: %d\n", tamanho(&lista));
+    printf("A lista está %s\n", vazia(&lista) ? "vazia" : "não vazia");
+    printf("A lista está %s\n", cheia(&lista) ? "cheia" : "não cheia");
+
+    return 0;
+}
