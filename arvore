@@ -1,0 +1,115 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct Arv{
+    int info;
+    struct arv*esq;
+    struct arv*dir;
+}arv;
+
+
+arv*criar_vazia(void){
+    return NULL;
+}
+
+int conta_nos(arv*a){
+   
+   if(a==NULL){
+    return 0;
+   }else
+   {
+    return 1 + conta_nos(a->esq) + conta_nos(a->dir);
+    
+   }
+
+}
+
+arv*criar(int val,arv*sae,arv*sad){
+    arv*p=(arv*)malloc(sizeof(arv));
+    p->info=val;
+    p->esq=sae;
+    p->dir=sad;
+    return p;
+}
+
+
+arv*liberar(arv* a){
+    if (a!=NULL){
+    {
+    liberar(a->esq);
+    liberar(a->dir);
+    free(a);
+    }
+    return NULL;
+    
+}
+}
+int soma_nos(arv* a){
+    if(a==NULL){
+        return 0;
+        
+    }else
+    {
+        return a->info + soma_nos(a->esq) + soma_nos(a->dir);
+    }
+    
+}
+
+
+    
+
+int arv_pertence(arv*a,int val){
+    if(a==NULL){
+        return 0;
+    } else
+    {
+        return (a->info==val) || arv_pertence(a->esq,val) || arv_pertence(a->dir,val);
+    }
+    
+}
+void arv_imprime(arv*a){
+    printf("<");
+    if (a!=NULL)
+    {
+        printf("%d",a->info);
+        arv_imprime(a->esq);
+        arv_imprime(a->dir);
+    }
+    printf(">");
+    
+}
+
+int main(){
+
+arv*a9 = criar(11,criar_vazia(),criar_vazia());
+arv*a6 = criar(8,criar_vazia(),criar_vazia());
+arv*a11 = criar(4,criar_vazia(),criar_vazia());
+arv*a7 = criar(9,criar_vazia(),a11);
+arv*a4 = criar(2,criar_vazia(),criar_vazia());
+arv*a2 = criar(5,criar_vazia(),a7);
+arv*a15 = criar(15,criar_vazia(),criar_vazia());
+arv*a14 = criar(14,criar_vazia(),criar_vazia());
+arv*a8 = criar(5,a14,a15);
+arv*a5 = criar(6,a8,a9);
+arv*a1 = criar(7,a4,a5);
+arv*a= criar(2,a1,a2);
+
+arv_imprime(a);
+
+
+
+
+printf("o numero de nos eh:%d\n",conta_nos(a));
+
+if (arv_pertence(a,3))
+{
+    printf("o valor 3 pertence a arvore.\n");
+}else
+{
+    printf("o valor 3 não pertence a árvore.\n");
+}
+printf("o somatorio dos nos eh:%d\n",soma_nos(a));
+liberar(a);
+
+
+    return 0;
+}
