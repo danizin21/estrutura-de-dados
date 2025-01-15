@@ -1,0 +1,146 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Estrutura da Árvore Binária de Busca (ABB)
+typedef struct Abb {
+    int info;
+    struct Abb *esq;
+    struct Abb *dir;
+} abb;
+
+// Função para criar uma árvore vazia
+abb *cria_Vazia(void) {
+    return NULL;
+}
+
+// Função para criar um novo nó na árvore
+abb *cria(int val, abb *sae, abb *sad) {
+    abb *a = (abb *)malloc(sizeof(abb));
+    if (!a) {
+        printf("Erro ao alocar memória.\n");
+        exit(1);
+    }
+    a->info = val;
+    a->esq = sae;
+    a->dir = sad;
+    return a;
+}
+
+// Função para imprimir a árvore (pré-ordem)
+void imprime(abb *a) {
+    if (a != NULL) {
+        printf("<%d", a->info);
+        imprime(a->esq);
+        imprime(a->dir);
+        printf(">");
+    } else {
+        printf("<>");
+    }
+}
+
+// Função para buscar um valor na árvore
+abb *busca(abb *a, int val) {
+    if (a == NULL) {
+        return NULL;
+    } else if (a->info > val) {
+        return busca(a->esq, val);
+    } else if (a->info < val) {
+        return busca(a->dir, val);
+    }
+    return a; // Valor encontrado
+}
+
+// Função para calcular a altura da árvore
+int altura(abb *a) {
+    if (a == NULL) {
+        return 0;
+    } else {
+        int altura_esq = altura(a->esq);
+        int altura_dir = altura(a->dir);
+        return (altura_esq > altura_dir ? altura_esq : altura_dir) + 1;
+    }
+}
+
+// Função para inserir um valor na árvore
+abb *inserir(abb *a, int val) {
+    if (a == NULL) {
+        abb *p = (abb *)malloc(sizeof(abb));
+        if (!p) {
+            printf("Erro ao alocar memória.\n");
+            exit(1);
+        }
+        p->info = val;
+        p->esq = p->dir = NULL;
+        return p;
+    } else if (val < a->info) {
+        a->esq = inserir(a->esq, val);
+    } else if (val > a->info) {
+        a->dir = inserir(a->dir, val);
+    }
+    return a;
+}
+
+// Função para remover um nó da árvore
+abb *abb_retira(abb *r, int v) {
+    if (r == NULL) {
+        return NULL;
+    } else if (r->info > v) {
+        r->esq = abb_retira(r->esq, v);
+    } else if (r->info < v) {
+        r->dir = abb_retira(r->dir, v);
+    } else {
+        // Nó encontrado
+        if (r->esq == NULL && r->dir == NULL) { // Nó sem filhos
+            free(r);
+            r = NULL;
+        } else if (r->esq == NULL) { // Nó com filho à direita
+            abb *t = r;
+            r = r->dir;
+            free(t);
+        } else if (r->dir == NULL) { // Nó com filho à esquerda
+            abb *t = r;
+            r = r->esq;
+            free(t);
+        } else { // Nó com dois filhos
+            abb *f = r->esq;
+            while (f->dir != NULL) {
+                f = f->dir;
+            }
+            r->info = f->info;
+            f->info = v;
+            r->esq = abb_retira(r->esq, v);
+        }
+    }
+    return r;
+}
+
+// Função principal
+int main() {
+    // Construção manual da árvore para teste
+    abb *a7 = cria(3, cria_Vazia(), cria_Vazia());
+    abb *a6 = cria(1, cria_Vazia(), cria_Vazia());
+    abb *a3 = cria(2, a6, a7);
+    abb *a4 = cria(5, cria_Vazia(), cria_Vazia());
+    abb *a8 = cria(9, cria_Vazia(), cria_Vazia());
+    abb *a5 = cria(7, cria_Vazia(), cria_Vazia());
+    abb *a2 = cria(8, a5, a8);
+    abb *a1 = cria(4, a3, a4);
+    abb *a = cria(6, a1, a2);
+
+    // Impressão da árvore
+    printf("Árvore em pré-ordem:\n");
+    imprime(a);
+    printf("\n");
+
+    // Busca de um valor
+    if (busca(a, 100)) {
+        printf("O valor 100 foi encontrado com sucesso!\n");
+    } else {
+        printf("O valor 100 não está presente na árvore.\n");
+    }
+
+    // Altura da árvore
+    printf("A altura da árvore é: %d\n", altura(a));
+
+    return 0;
+}
